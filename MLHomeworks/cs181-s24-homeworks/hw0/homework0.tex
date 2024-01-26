@@ -107,7 +107,68 @@ In this class we will be exploring the question of ``how do we model the trend i
 
 
 \begin{solution}
-	Your solution here.
+	\textbf{1) }Given our two points and the general equation of a line in 2-dimensions, we arrive at the following system of linear equations:
+ $$
+ y_{1} = w_{0} + w_{1}x_{1} \Rightarrow y_{1} - w_{1}x_{1} = w_{0}
+ $$
+ $$
+ y_{2} = w_{0} + w_{1}x_{2}
+ $$
+ Substituting our obtained value for $w_{0}$ into the second equation, we solve for $w_{1}$:
+ $$
+ y_{2} = (y_{1} - w_{1}x_{1}) + w_{1}x_{2} \Rightarrow y_{2} - y_{1} = w_{1}(x_{2} - x_{1}) \Rightarrow w_{1} = \frac{y_{2} - y_{1}}{x_{2} - x_{1}}
+ $$
+ We substitute the above value for $w_{1}$ to solve for $w_{0}$:
+$$
+y_{1} - w_{1}x_{1} = w_{0} \Rightarrow w_{0} = y_{1} - x_{1}\cdot \frac{y_{2} - y_{1}}{x_{2} - x_{1}}
+$$
+$$
+\Rightarrow w_{0} = \frac{y_{1}x_{2} - y_{1}x_{1} - x_{1}y_{2} + x_{1}y_{1}}{x_{2} - x_{1}} \Rightarrow w_{0} = \frac{y_{1}x_{2} - x_{1}y_{2}}{x_{2} - x_{1}}
+$$
+
+\textbf{2) } In matrix notation, for $\textbf{y}, \textbf{w} \in \mathbb{R}^{2}$ and $\textbf{X} \in \mathbb{R}^{2 \times 2}$, we have $\textbf{y} = \textbf{X}\textbf{w}$, where $\textbf{y} = \begin{bmatrix}
+    y_{1} \\
+    y_{2}
+\end{bmatrix}, \textbf{X} = \begin{bmatrix}
+    1 & x_{1} \\
+    1 & x_{2}
+\end{bmatrix}$, and $\textbf{w} = \begin{bmatrix}
+    w_{0} \\
+    w_{1}
+\end{bmatrix}.$ Here, $\textbf{y}$ is the output vector which contains the $y$-coordinates of the two points. $\textbf{X}$ is the feature matrix, which has a first column of $1$s to represent the coefficients for $w_{0}$ (the $y$-intercept) and a second column of $x_{1}$ and $x_{2}$ to be multiplied by the slopes, $w_{0}$ and $w_{1}$ from $\textbf{w}$, the weight vector. 
+
+\textbf{3) } We claim that above matrix equation of the form $\textbf{y} = \textbf{X}\textbf{w}$ has a unique solution if $\textbf{X}$ is invertible. In such case, we would have $\textbf{X}^{-1}\textbf{y} = \textbf{w}$. Since the inverse of a matrix is unique, $\textbf{w}$ is unique. 
+
+Now, a matrix is invertible iff its determinant is not equal to 0. Thus, we desire det $\textbf{X} \neq 0 \Rightarrow x_{2} - x_{1} \neq 0 \Rightarrow x_{1} \neq x_{2}$. 
+
+In such case, the solution for $\textbf{w}$ exists and is unique. We have
+$$
+\textbf{w} = \textbf{X}^{-1}\textbf{y} \Rightarrow \begin{bmatrix}
+    w_{0}\\
+    w_{1}
+\end{bmatrix} = \begin{bmatrix}
+    \frac{x_{2}}{x_{2} - x_{1}} & \frac{-x_{1}}{x_{2} - x_{1}}\\
+    \frac{-1}{x_{2} - x_{1}} & \frac{1}{x_{2} - x_{1}}
+\end{bmatrix} \begin{bmatrix}
+    y_{1} \\
+    y_{2}
+\end{bmatrix}
+$$
+
+\textbf{4) } Performing the matrix multiplication from $\textbf{(3)}$, we arrive at the following system of linear equations. Observe that the derived results for $w_{0}$ and $w_{1}$ match exactly the solution obtained in $\textbf{(1)}$. 
+$$
+w_{0} = \frac{x_{2}}{x_{2} - x_{1}}y_{1} + \frac{-x_{1}}{x_{2} - x_{1}}y_{2} \Rightarrow w_{0} = \frac{x_{2}y_{1} - x_{1}y_{2}}{x_{2} - x_{1}}
+$$
+$$
+w_{1} = \frac{-1}{x_{2} - x_{1}}y_{1} + \frac{1}{x_{2} - x_{1}}y_{2} \Rightarrow w_{1} = \frac{y_{2} - y_{1}}{x_{2} - x_{1}}
+$$
+One advantage for phrasing the problem of fitting the model in terms of matrix notation is using linear algebra techniques to efficiently compute solutions. Especially when dealing with large datasets or higher-dimensional data, solving systems of linear equations by substitution is time-consuming. Matrices and vectors can be easily manipulated with computers to perform complex operations quickly and accurately. Additionally, using matrix notation makes it easier to understand qne generalize the problem to more variables and observations, enabling a concise representation of the problem and solution.
+
+\textbf{5) } In such cases, our analytical expression for $\textbf{w}$ that we derived in $\textbf{(3)}$ \textit{does not }apply immediately to the
+case when $\textbf{D}$ consists of more than two points. From a linear algebra perspective, with more than two data points, the matrix $\textbf{X}$ would no longer be square (no longer $2 \times 2$). Rather, it would be rectangular with dimensions $m \times n$ for integers $m$ and $n$ with $m > n$. 
+
+While non-square matrices have psuedoinverses, there does not exist a well-defined inverse -- in other words, in such case, $\textbf{X}$ would no longer be invertible and the system would be overdetermined. 
+
 \end{solution}
 
 \color{black}
@@ -144,9 +205,32 @@ $$y = f(x_1, x_2) = \exp\left(-(x_1 - 2)^2 - (x_2 - 1)^2 \right)$$
 
 
 \begin{solution}
-	Your solution here.
-\end{solution}
+	\textbf{1) } Yes, the plant \textit{does} have a maximum height. Consider the matplotlib plot of the the height, $y$, in mm of her Weeping Fig plant as a function of oz of water, $x$ below. This given function is concave down and appears to have a unique maximum:
 
+ \begin{figure}[H]
+     \centering
+     \includegraphics[width=0.5\linewidth]{Screenshot 2024-01-15 at 4.42.35 PM.png}
+     \caption{Plot of Height (mm) as a function of Water (oz) }
+     \label{fig:enter-label}
+ \end{figure}
+
+
+ \textbf{2) } We solve analytically for the critical points of the height function by taking the derivative and setting it equal to 0:
+$$
+y = -3x^{2} + 72x + 70 \Rightarrow y' = -6x + 72 = 0 \Rightarrow x = 12
+$$
+We confirm that $x = 6$ is a local max via the second derivative test, as $f''(12) = -6$, which means that the function is concave down, so $x = 12$ is a maximum. Note that this is a global maximum because the function is a downward-opening parabola (concave down everywhere), which means there can be no other higher points than the top of the parabola.
+
+With $x = 12$ oz of water, the height of the plant would be $-3(12)^{2} + 72(12) + 70 = 502$ mm. 
+
+\textbf{3) } Consider the matplotlib plot below. We argue that there exists a unique solution to Nari’s problem on because on the boundaries of $[0,6] \times [0,6]$, the function value decreases as we move away from the center. In addition, the Gaussian function has a natural bell shape, so it has one global maximum. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Screenshot 2024-01-15 at 5.03.40 PM.png}
+    \caption{3D Plot height (mm) as a function of water (oz) and sunlight (hours)}
+    \label{fig:enter-label}
+\end{figure}
+\end{solution}
 
 \color{black}
 
@@ -183,8 +267,68 @@ For this problem, you may find the \texttt{multivariate\_normal} module from \te
 \newpage
 
 \begin{solution}
-	Your solution here.
-\end{solution} 
+	\textbf{1a) }  Below, we visualize the Bivariate Gaussian distribution for the size $S$ and weight $W$ of the packages
+by sampling 500 times from the joint distribution of $S$ and $W$ and generating a bivariate histogram of your S and W samples (see code in .ipynb file):
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Screenshot 2024-01-15 at 11.46.12 PM.png}
+    \caption{Visualization of Bivariate Gaussian Distribution}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\textbf{1b) } We empirically estimate the most likely combination of size and weight of a package by finding the bin of our bivariate histogram with the highest frequency. Visually, this yields about 120.4 cubic inches for size and 3.8 pounds for weight. This estimate is relatively close to the theoretical expected size (120 cubic inches) and expected weight of a package (4 pounds). 
+
+
+\textbf{2) }
+From the below plot, we can conclude that there is a positive correlation between 
+$S$ and $W$. When $S$ increases from $S = 118$ to $S = 122$, the peak of the PDF for 
+$W$ also shifts to the right, from about $2.2$ to $5.5$. This is consistent with the positive value in the covariance matrix and with our intuition, which indicates that as the size of the package increases, the weight tends to increase as well. 
+
+\textbf{3) } The Gaussian distribution is a good model for natural variation in measurements when no single factor dominates the variation, which is often the case with the size and weight of packages. When many such small, independent factors contribute to a measurement, via CLT, that the distribution of those measurements will approach a Gaussian distribution.
+
+ However, the Gaussian distribution may not be entirely appropriate because it assumes that size and weight can take on any value from negative infinity to positive infinity. In reality, sizes and weights are physically constrained; they cannot be negative, and there may be practical upper limits as well, given something like shipping laws. 
+
+ This bounded nature of the data could make other distributions, like the log-normal distribution or truncated Gaussian distribution, more appropriate in some cases.
+
+ \textbf{4) } Using properties of expectations and variance (ie. linearity of expectations), we compute $E(T)$ analytically:
+ $$
+ T = 60 + 0.6W + 0.2S + \epsilon \Rightarrow E(T) = E(60 + 0.6W + 0.2S + \epsilon) = 60 + 0.6E(W) + 0.2E(S) + E(\epsilon)
+ $$
+ $$
+ = 60 + 2.4 + 24 + 0 = 86.4
+ $$
+ Additionally, we compute Var$(T)$ analytically:
+ $$
+T = 60 + 0.6W + 0.2S + \epsilon \Rightarrow Var(T) = Var(60 + 0.6W + 0.2S + \epsilon)
+$$
+$$
+= Var(0.6W) + Var(0.2S) + 2(0.6)(0.2)Cov(W, S) + Var(\epsilon) 
+$$
+$$
+= 0.36(1.5) + 0.04(1.5) + .24(1) + 5 = 5.84
+$$
+
+\textbf{5a) } Below is the function to simulate draws from the distribution of T* (can also see code in the .ipynb file):
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Screenshot 2024-01-16 at 12.56.06 AM.png}
+    \caption{Function to Simulate Draws from T* Distribution}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\textbf{5b) } Via the code below, we empirically estimate the mean and standard deviation of T* to be about 6216.893784147 and 688.9818247092737, respectively.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Screenshot 2024-01-16 at 1.05.11 AM.png}
+    \caption{Simulating 1000 Samples From T* and Estimating Mean/SD}
+    \label{fig:enter-label}
+\end{figure}
+
+\end{solution} 
 
 \end{document}
